@@ -1,8 +1,9 @@
 import './style.css'
-import {resources} from './src/Resource.js'
-import {Sprite} from './src/Sprite.js'
-import {Vector2} from './src/Vector2.js'
+import { resources } from './src/Resource.js'
+import { Sprite } from './src/Sprite.js'
+import { Vector2 } from './src/Vector2.js'
 import { GameLoop } from './src/GameLoop.js'
+import { Input } from './src/Input.js'
 
 const canvas = document.querySelector('#game-canvas')
 const ctx = canvas.getContext('2d')
@@ -35,7 +36,29 @@ const ground = new Sprite({
 })
 const update = () => {
     // Updating entities in the game
-    hero.frame += 1;
+    if (input.direction === 'UP') {
+        // 6 is walking, 7 is facing, 8 is walking
+        heroPos.y -= 1;
+        hero.frame = 6;
+        if (hero.frame === 6) {
+            hero.frame = 7;
+        } else if (hero.frame === 7) {
+            hero.frame = 8;
+        } else if (hero.frame === 8) {
+            hero.frame = 6;
+        }
+        
+    }
+    if (input.direction === 'DOWN') {
+        heroPos.y += 1;
+    }
+    if (input.direction === 'LEFT') {
+        heroPos.x -= 1;
+    }
+    if (input.direction === 'RIGHT') {
+        heroPos.x += 1;
+        hero.frame = 3;
+    }
 }
 const draw = () => {
     sky.drawImage(ctx, 0, 0);
@@ -49,4 +72,5 @@ const draw = () => {
 }
 
 const gameLoop = new GameLoop(update, draw)
+const input = new Input();
 gameLoop.start()
